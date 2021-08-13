@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .baseFontColor {
+      color: red;
+    }
+  </style>
+  <!--  <link rel="import" href="template.html">-->
+</head>
+<body>
+
+<template id="myTemplate0">
+  <div>
+    <h2>{{ title }}</h2>
+    <p>{{ content }}</p>
+  </div>
+</template>
+
+<template id="myTemplate1">
+  <div>
+    <br>
+    <p class="baseFontColor"> 子组件中,多个标签必须在一个根标签中,比如外层套一个div标签 </p>
+    <br>
+    <p class="baseFontColor">使用data函数的意义是为了让每个组件实例使用的data域都保持独立,不相互影响 </p>
+    <h2>{{ title }}</h2>
+    <p>{{ content }}</p>
+  </div>
+</template>
+
+<template id="myTemplate2">
+  <div>
+    <button v-for="item in cCategories" @click="categoryClick(item)">{{ item.name }}</button>
+    <br>
+  </div>
+</template>
+
+<div id="app">
+  <p :class="baseFontColor"> 组件是需要在vue的作用域内使用 </p>
+  <p :class="baseFontColor"> 父组件 -> props->子组件 </p>
+  <p :class="baseFontColor"> 子组件 -> $emit Event->父组件 </p>
+  <cpn2 v-bind:c-movies="movies" :c-message="message"></cpn2>
+  <br>
+  <p :class="baseFontColor">通过 Vue.component('cpn0',{}) 注册的全局组件,不需要再Vue实例中注册,因为是全局组件,可以直接使用</p>
+  <cpn0></cpn0>
+  <!-- 发射的事件名要和父组件中@到的时间名保持一致,才能绑定到父组件的事件方法上  -->
+  <cpn3 :c-categories="categories" @category-click2="cpn3BtnClick"></cpn3>
+  <br>父子组件双向通信<br>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //注册为全局组件 Vue.component
+  Vue.component('cpn0', {
+    template: '#myTemplate0',
+    data() {
+      return {
+        title: '全局组件.component标题',
+        content: '全局组件.component内容',
+      }
+    }
+  });
+
+  //注册为局部组件 Vue.component
+  const cpn1 = Vue.extend({
+    template: '#myTemplate1',
+    data() {
+      return {
+        title: '子组件标题',
+        content: '子组件内容',
+      }
+    }
+  });
+
+  //注册为局部组件
+  const cpn2 = {
+    template: `
+      <div>
+      <h2>局部标题2/同时也是父子组件</h2>
+      <p>内容2.......</p>
+      <br>
+      <p class="baseFontColor"> 通过props 和 v-bind,将父组件的数据传到子组件中 </p><br>
+      <ul>
+        <li v-for="item in cMovies">{{ item }}</li>
+      </ul>
+      <h2>{{ cMessage }}</h2>
+      <h2>{{ cDefault }}</h2>
+      <cpn1></cpn1>
+      </div>
+    `,
+    data() {
+      return {}
+    },
+    //1.
+    // props: ['cmovies', 'cmessage']
+    //2.
+    //可以这样写,增加类型的限制
+    // props: {
+    //   cmovies: Array,
+    //   cmessage: String
+    // }
+    //3.
+    //还可以设置默认值
+    props: {
+      //如果是驼峰命名,那么bind的时候使用-链接, eg: c-movies
+      cMovies: {
+        type: Array,
+        //default:[] //这样会报错
+        //如果是object/array 必须使用工厂函数的形式
+        default() {
+          return [];
+        },
+        //还可以使用validator进行验证
+        validator(value) {
+          return value.indexOf('海王') > -1
+        }
+      },
+      cMessage: {
+        type: String,
+        default: '这是一个默认值',
+        required: true //使用这个组件的时候 这个属性必须传
+      },
+      cDefault: {
+        type: String,
+        default: 'cdefault value is default'
+      }
+    },
+    components: {
+      cpn1
+    }
+  };
+
+  const cpn3 = {
+    template: '#myTemplate2',
+    props: {
+      cCategories: {
+        type: Array,
+        default() {
+          return [];
+        }
+      }
+    },
+    methods: {
+      categoryClick(item) {
+        this.$emit('category-click2', item)
+      }
+    }
+  }
+
+  //Vue实例为Root组件
+  let app = new Vue({
+    el: '#app',
+    data: {
+      baseFontColor: 'baseFontColor',
+      movies: ['海王', '海尔兄弟', '海扁王', '海贼王'],
+      message: 'this is from root vue component',
+      categories: [
+        {id: 1, name: '生活'},
+        {id: 2, name: '电器'},
+        {id: 3, name: '汽车'},
+        {id: 4, name: '两性'}
+      ],
+    },
+    methods: {
+      cpn3BtnClick(item) {
+        console.log(item.id + ' ' + item.name)
+      }
+    },
+    //注册组件
+    components: {
+      //属性的增强写法
+      //cpn2: cpn2
+      cpn2,
+      cpn3
+    }
+  })
+  setTimeout(function () {
+    window.scrollTo(0, document.body.scrollHeight)
+  }, 20)
+</script>
+</body>
+</html>

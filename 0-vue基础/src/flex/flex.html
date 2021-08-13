@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<!--<div class="parentDiv">-->
+<!--  <span>1</span>-->
+<!--  <span>2</span>-->
+<!--  <span>3</span>-->
+<!--</div>-->
+<!--顶部搜索-->
+<div class="search-index">
+  <div class="index-search">搜索:目的地/酒店/景点</div>
+  <a class="index-my">我 的</a>
+</div>
+<!--局部导航栏-->
+<ul class="local-nav">
+  <li class="nav-li">
+    <a href="">
+      <span class="nav-li-icon-1"></span>
+      <span class="nav-li-text-1">酒店*景点</span>
+    </a>
+  </li>
+  <li class="nav-li">
+    <a href="">
+      <span class="nav-li-icon-2"></span>
+      <span class="nav-li-text-2">机票</span>
+    </a>
+  </li>
+  <li class="nav-li">
+    <a href="">
+      <span class="nav-li-icon-3"></span>
+      <span class="nav-li-text-3">公交</span>
+    </a>
+  </li>
+  <li class="nav-li">
+    <a href="">
+      <span class="nav-li-icon-4"></span>
+      <span class="nav-li-text-4">商务</span>
+    </a>
+  </li>
+  <li class="nav-li">
+    <a href="">
+      <span class="nav-li-icon-5"></span>
+      <span class="nav-li-text-5">住房</span>
+    </a>
+  </li>
+
+</ul>
+
+</body>
+<style>
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .local-nav {
+    display: flex;
+    height: 58px;
+    background-color: #cccccc;
+    margin: 48px 4px auto 7px;
+    /*小圆角*/
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  /*属性选择器*/
+  .local-nav li [class^="nav-li-icon"] {
+    /*需要设置内容*/
+    content: "";
+    /*需要设置为block块*/
+    display: block;
+    width: 28px;
+    height: 28px;
+    background: url(nav.png) no-repeat 0 -84px;
+    background-size: 28px auto;
+  }
+
+  .local-nav li [class^="nav-li-text"] {
+    margin: 5px auto;
+    color: black;
+  }
+
+  .local-nav li .nav-li-icon-2 {
+    background-position: 0 -56px;
+  }
+
+  .local-nav li .nav-li-icon-3 {
+    background-position: 0 -224px;
+  }
+
+  .local-nav li .nav-li-icon-4 {
+    background-position: 0 -308px;
+  }
+
+  .local-nav li .nav-li-icon-5 {
+    background-position: 0 -336px;
+  }
+
+
+  .nav-li a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .local-nav li {
+    flex: 1;
+    margin: 0;
+    font-size: 12px;
+    border-left: 1px solid #f6f6f6;
+  }
+
+  .search-index {
+    /*固定的盒子与父级没有关系,只和屏幕有关系*/
+    position: fixed;
+    /*固定的盒子必须有宽度*/
+    top: 0;
+    /*实现固定盒子的居中布局*/
+    /*先让左边在50%的地方*/
+    left: 50%;
+    /*然后动态的向左移动盒子自身宽度的50%, 实现居中布局*/
+    transform: translateX(-50%);
+    width: 100%;
+    height: 44px;
+    min-width: 320px;
+    max-width: 540px;
+    /*background-color: pink;*/
+    display: flex;
+    box-sizing: border-box;
+    background-color: #f6f6f6;
+    border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+  }
+
+  .index-my {
+    width: 44px;
+    height: 44px;
+    /*background-color: cornflowerblue;*/
+    font-size: 12px;
+    text-align: center;
+    color: blue;
+    /*让元素往上移动2px*/
+    margin-top: -3px;
+  }
+
+  /*使用before  来插入头像*/
+  .index-my::before {
+    /*需要设置内容*/
+    content: "";
+    /*需要设置为block块*/
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: url(tabbar.png) no-repeat -7px -234px;
+    /*修改图片大小*/
+    background-size: 38px auto;
+    margin: 5px auto 0;
+  }
+
+  .index-search {
+    position: relative;
+    flex: 1;
+    height: 26px;
+    /*行高 ,设置行高等于元素高 ,那么文字可以垂直居中*/
+    line-height: 26px;
+    border: 1px solid #ccc;
+    /*属性为上 右 下 左  顺时针*/
+    margin: auto;
+    font-size: 14px;
+    color: #666666;
+    padding-left: 36px;
+    box-shadow: 0 2px 4px #666666;
+  }
+
+  /* 块级元素  会挤掉同级元素*/
+  /*.index-search::before {*/
+  /*  content: "";*/
+  /*  display: block;*/
+  /*  background: url(tabbar.png) no-repeat -6px -197px;*/
+  /*  width: 27px;*/
+  /*  height: 25px;*/
+  /*  background-size: 38px auto;*/
+  /*  margin: 1px;*/
+  /*}*/
+
+  /*将搜索图片改为绝对定位, 因为不占位置*/
+  .index-search::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: url(tabbar.png) no-repeat -6px -197px;
+    width: 27px;
+    height: 25px;
+    background-size: 38px auto;
+    margin: 1px;
+  }
+
+  .parentDiv {
+    width: 40%;
+    height: 500px;
+    background-color: #ff8198;
+    display: flex;
+    /*  父级属性  */
+    /*  主轴 x轴 为默认轴 水平向右 侧轴为Y轴,垂直向下*/
+    /*flex-direction: row;*/
+
+    /*justify-content 属性  跟随主轴排列*/
+    /*默认是从左到右*/
+    /*justify-content: flex-start;*/
+    /*居中对齐*/
+    /*justify-content: center;*/
+    /*平均分配剩余空间*/
+    /*justify-content: space-around;*/
+    /*两边贴边,然后平分剩余空间*/
+    /*justify-content: space-between;*/
+
+    /*flex-wrap 属性 nowrap 默认子元素不换行, 如果装不下,会所缩小子元素排列*/
+    /*另启一行来装子元素*/
+    /*flex-wrap: wrap;*/
+
+    /*只能在单行的时候使用  侧轴排列!!!*/
+    /*跟随侧轴子元素的排列*/
+    /*align-items: ;*/
+    /*侧轴居中*/
+    /*align-items: center;*/
+
+    /*多行的情况下, 侧轴排列*/
+    /*align-content: ;*/
+    /*上线贴边*/
+    /*align-content: space-between;*/
+
+    /*复合属性 flex-flow*/
+    /*相当于 flex-wrap + flex-direction*/
+    flex-flow: wrap row;
+  }
+
+  .parentDiv span {
+    /*width: 100px;*/
+    height: 200px;
+    background-color: #42b983;
+    margin: 10px;
+
+    /*flex 子项布局属性*/
+    /*子项股份占剩余空间 多少份*/
+    flex: 1;
+
+  }
+
+  /*很神奇*/
+  /*控制第三个span 自己靠近侧轴对齐*/
+  div span:nth-child(3) {
+    align-self: flex-end;
+  }
+
+  div span:nth-child(2) {
+    /*默认是0 从小到大排列*/
+    order: -1;
+  }
+
+  body {
+    max-width: 540px;
+    min-width: 320px;
+    margin: 0 auto;
+    background-color: #f2f2f2;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    color: black;
+  }
+
+</style>
+</html>

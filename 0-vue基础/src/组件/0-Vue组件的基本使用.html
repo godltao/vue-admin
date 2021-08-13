@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .baseFontColor {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <p :class="baseFontColor"> 组件是需要在vue的作用域内使用 </p><br>
+  <cpn1></cpn1>
+  <cpn2></cpn2>
+</div>
+<template id="myTemplate">
+  <div>
+    <h2>{{ title }}</h2>
+    <p>{{ content }}</p>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  //1. 创建注册组件构造器对象 局部组件
+  // Vue.extend({
+  // })
+
+  //2. 注册全局组件
+  // Vue.component('',)
+  //全局的组件
+  //
+  Vue.component('cpn1', {
+    template: '#myTemplate',
+    data() {
+      return {
+        title: '我是全局template title from data function',
+        content: '我是全局template content from data function',
+      }
+    }
+  })
+
+  let app = new Vue({
+    el: '#app',
+    data: {
+      baseFontColor: 'baseFontColor'
+    },
+    methods: {},
+    //注册组件
+    components: {
+      cpn2: {
+        template: `
+          <div>
+            <h2>局部标题2/同时也是父子组件</h2>
+            <p>内容2.......</p>
+          </div>
+        `
+      }
+    }
+  })
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-html</title>
+  <style>
+
+    [v-cloak] {
+      display: none;
+    }
+
+    .baseFontColor {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<!-- v-cloak 斗篷,只有数据加载完成后,才会将标签去掉,那么改div才会被展示出来-->
+<div id="app" v-cloak>
+  <br>-------------- mustache语法 --------------<br>
+  <h3>{{ message }}</h3>
+  <h3>{{ message }}, 你好</h3>
+  <h3>{{ firstName + lastName }}</h3>
+  <h3>{{ firstName + ' ' + lastName }}</h3>
+  <h3>{{ firstName }} {{ lastName }}</h3>
+  <h3>{{ counter * 2 }}</h3>
+  <br>--------------v-html--------------<br>
+  <h3>{{ url }}</h3>
+  <h3 v-html='url'></h3>
+  <br>-------------- 不够灵活,不如mustache --------------<br>
+  <h3 v-text='url'></h3>
+  <h3 v-text='url'>, 会被覆盖</h3>
+  <br>-------------- 只有第一次的时候才渲染,后面不会跟随data改变而改变 --------------<br>
+  <h3 v-once>{{ message }}</h3>
+  <br>--------------v-pre 原封不动显示内容--------------<br>
+  <h3 v-pre>{{ message }}</h3>
+
+  <!--  图片加载太慢,暂时屏蔽-->
+  <!--  <img v-bind:src="imageUrl" onload="autoScroll()">-->
+  <!--  <img v-bind:src="imageUrl" @load="autoScroll2()">-->
+
+  <br>--------------计算属性--------------<br>
+  <h3>无法在data中直接拼接数据 : {{ fullName }}</h3>
+  <p class="baseFontColor">计算属性多次调用的时候,只会计算一次,而methods调用的时候,会每次都执行</p>
+  <p :class="baseFontColor2">计算属性多次调用的时候,只会计算一次,而methods调用的时候,会每次都执行</p>
+  <p :class="getBaseFontColor()">计算属性多次调用的时候,只会计算一次,而methods调用的时候,会每次都执行</p>
+  <h3>{{ fullName2 }}</h3>
+  <h3>{{ getFullName() }}</h3>
+  <h3>{{ totalPrice }}</h3>
+  <br>-------------- 列表 --------------<br>
+  <ul>
+    <!--  实现默认第一行变红, 点击其他的选项切换变红, 并且悬浮变手型-->
+    <li v-for="(item, index) in books" :class="{baseFontColor: index === currentIndex}"
+        style="cursor: pointer"
+        @click="clickChangeFontBaseColor(index)">
+      {{ item.name }}
+    </li>
+  </ul>
+  <br>-------------- 事件监听 v-on --------------<br>
+  <br>
+  <p :class="baseFontColor2"> 如果 @click后的方法有参数,但是不传,那么默认回将event传给参数,手动传event使用$event</p><br>
+  <button @click="btnClick">按钮1</button>
+  <button @click="btnClick(123, $event)">按钮2</button>
+  <br>-------------- 事件冒泡 和 通过.stop阻止事件冒泡--------------<br>
+  <div @click="divClick">
+    <button @click="btnClick">按钮1</button>
+    this is div area
+    <button @click.stop="btnClick">按钮2</button>
+  </div>
+  <br>
+  <p :class="baseFontColor2">通过 .prevent阻止默认事件,阻止提交表单,做自己的click操作 </p><br>
+  <form action="google">
+    <input type="submit" @click.prevent="btnClick">
+  </form>
+  <br>-------------- 键盘点击事件keyUp/keyDown --------------<br>
+  <br>
+  <p :class="baseFontColor2"> 也可以监听具体的某一个键 .enter /.alt 等,这样就可以输入完成后,敲击回车直接提交 </p>
+  <p :class="baseFontColor2">自定义组件的话, 需要使用@click.native 监听才能生效</p>
+  回车提交<input type="text" @keyup.enter="btnClick"><br>
+  <button @click.once="btnClick">只能点击一次</button>
+  <br>-------------- 条件判断 v-if v-else--------------<br>
+  {{ isShow }}
+  <h2 v-if="isShow">v-if 条件判断标签显示</h2>
+  <h2 v-else>v-else 条件判断标签显示</h2>
+  <br>-------------- Vue 标签复用 --------------<br>
+  <br>
+  <p :class="baseFontColor2">
+    Vue 渲染标签到浏览器的时候,会先创建虚拟DOM,然后再发生改变的时候,<br>
+    会复用以前有的标签,更新不同的属性即可<br>
+    所以不会清空以前的输入,如果要手动设置,增加key属性,标识两个标签不是同一个东西,就可以实现清空当前输入<br>
+    v-if 和 v-show 区别<br>
+    v-if: 不显示的时候,界面上不存在该标签<br>
+    v-show: 不显示的时候,界面上存在该标签,只是display:none<br>
+    > 在显示和隐藏切换很频繁的时候用v-show, 切换一次的时候用v-if
+  </p><br>
+  <span v-if="isShow">
+    <label for="email">用户邮箱</label>
+    <input type="text" id="email" placeholder="会清空当前email输入" key="email"/>
+    <input type="text" id="email2" placeholder="不会清空当前email输入"/>
+  </span>
+  <span v-else>
+    <label for="userName">用户名</label>
+    <input type="text" id="userName" placeholder="会清空当前userName输入" key="userName"/>
+    <input type="text" id="userName2" placeholder="不会清空当前userName输入"/>
+  </span>
+  <button @click="isShow = !isShow">切换类型</button>
+  <br>-------------- v-show 隐藏和显示,标签的 display属性 --------------<br>
+  <label v-show="isShow">显示</label>
+  <label v-show="!isShow">不显示</label>
+  <button @click="isShow = !isShow">显示/不显示</button>
+  <br>-------------- v-for --------------
+  <br>
+  <p :class="baseFontColor2">
+    官方建议在使用v-for的时候使用key属性,<br>
+    使得在虚拟dom渲染到浏览器的时候,比较出不同<br>
+    -要保证key的唯一性-<br>
+    从而最小的改动渲染到浏览器上 <br>
+  </p><br>
+  <ul>
+    <li v-for="item in info">{{ item }}</li>
+  </ul>
+  <ul>
+    <li v-for="(v, k) in info">{{ k }}: {{ v }}</li>
+  </ul>
+  <ul>
+    <li v-for="(v, k, index) in info" :key="k">{{ index }} - {{ k }}: {{ v }}</li>
+  </ul>
+  <br>
+  <p :class="baseFontColor2">
+    对数组使用splice(2,2) => 从index=2开始删除两个元素<br>
+    对数组使用splice(2,0,'E') => 在index=2的位置,插入E元素
+  </p><br>
+  <ul>
+    <li v-for="item in letters" :key="item">{{ item }}</li>
+  </ul>
+  <br>-------------- 过滤器 filters --------------<br>
+  使用过滤器保留一位小数,并增加单位: {{ info.height | showHeight }}<br>
+
+  <br>-------------- v-model --------------<br>
+  <br>
+  <p :class="">双向绑定, v-model实际上是两个指令的合集,通过{{}} + @click事件 实现双向绑定 </p><br>
+  <input type="text" v-model="message">
+  <input type="text" :value="message" @input="message = $event.target.value">
+  <h2>{{ message }}</h2>
+
+  <!--  单选radio-->
+  <label for="male">
+    <input type="radio" value="男" id="male" v-model="sex">男
+  </label>
+  <label for="female">
+    <input type="radio" value="女" id="female" v-model="sex">女
+  </label>
+  <h2>您选择的性别是: {{ sex }}</h2>
+
+  <!--  多选checkbox-->
+  <input type="checkbox" value="篮球" v-model="hobby">篮球
+  <input type="checkbox" value="足球" v-model="hobby">足球
+  <input type="checkbox" value="羽毛球" v-model="hobby">羽毛球
+  <input type="checkbox" value="乒乓球" v-model="hobby">乒乓球
+  <br>
+  <p :class="baseFontColor2">
+    动态加载选项[值绑定]<br>
+    v-for: 加在需要重复循环出现的标签上,该标签以及其内部标签都会重复循环的出现 <br>
+    v-model: 赋值的时候默认是String类型
+  </p><br>
+  <label v-for="item in originHobbies" :for="item">
+    <input type="checkbox" :id="item" :value="item" v-model="hobby">{{ item }}
+  </label>
+
+  <h2>选择的爱好是: {{ hobby }}</h2>
+
+  <!--  selector-->
+  <select name="fruit" id="fruit" v-model="fruit">
+    <option value="香蕉">香蕉</option>
+    <option value="苹果">苹果</option>
+    <option value="榴莲">榴莲</option>
+    <option value="芒果">芒果</option>
+  </select>
+  <h2>您选择的水果是:{{ fruit }}</h2>
+  <!--  selector 选择多个-->
+  <br>
+  <p :class="baseFontColor2">按住ctrl键选择多个 </p><br>
+  <select name="fruits" id="fruits" v-model="fruits" multiple>
+    <option value="香蕉">香蕉</option>
+    <option value="苹果">苹果</option>
+    <option value="榴莲">榴莲</option>
+    <option value="芒果">芒果</option>
+  </select>
+  <h2>您选择的水果是:{{ fruits }}</h2>
+
+  <!--修饰符-->
+  <!--  lazy-->
+  <br>
+  <p :class="baseFontColor2"> v-model 会写值 默认是String </p><br>
+  <input type="text" v-model.lazy="message"> .lazy标签: 失焦或者敲回车的时候才触发 <br>
+  <input type="text" v-model.number="message"> .number标签: 会自动的将输入的字符串,取出数字部分,变为number类型 <br>
+  <input type="text" v-model.trim="message"> .trim标签: trim去空格 <br>
+  <h2>{{ typeof message }} : {{ message }}</h2>
+  <br>-------------- --------------<br>
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  //测试 v-cloak,延迟一秒加载,造成vue的代码还没有被加载出数据,防抖动
+  //如果把app定义在setTimeout中,那么在console中修改app的属性,不会动态更新到界面上???/why
+  const app = new Vue({
+    el: '#app',
+    data: {
+      message: 'hello',
+      url: '<a href="https://www.google.com">google</a>',
+      firstName: 'kobe',
+      lastName: 'bryant',
+      counter: 100,
+      imageUrl: 'https://pic3.zhimg.com/80/v2-9856df9fe518af5bedcc78fe4d19943e_720w.jpg',
+      fullName: this.firstName + ' ' + this.lastName,//这样是不能得到正确的结果
+      baseFontColor2: 'baseFontColor',
+      books: [
+        {id: 1, name: '计算机原理', price: 100},
+        {id: 2, name: '高数', price: 132},
+        {id: 3, name: '英语', price: 99}
+      ],
+      info: {
+        name: 'why',
+        age: 18,
+        height: 1.88
+      },
+      letters: ['A', 'B', 'C', 'D'],
+      currentIndex: 0,
+      isShow: true,
+      sex: '男',
+      hobby: [],
+      originHobbies: ['篮球', '乒乓球', '橄榄球', '羽毛球', '足球'],
+      fruit: '榴莲',
+      fruits: []
+    },
+    //计算属性
+    computed: {
+      //计算属性多次调用的时候,只会计算一次(如果属性改变了,那么还是会重新计算),而methods调用的时候,会每次都执行
+      fullName2() {
+        return this.firstName + ' ' + this.lastName
+      },
+      totalPrice() {
+        let sum = 0;
+        //method 1
+        // for (let i = 0; i < this.books.length; i++) {
+        //   sum += this.books[i].price
+        // }
+        //method 2  i is index
+        // for (let i in this.books) {
+        //   sum += this.books[i].price
+        // }
+        //method 3 book is item object in books
+        for (let book of this.books) {
+          sum += book.price
+        }
+        return sum
+      }
+    },
+    methods: {
+      getFullName() {
+        return this.firstName + ' ' + this.lastName
+      },
+      getBaseFontColor() {
+        return 'baseFontColor';
+      },
+      autoScroll2() {
+        autoScroll()
+      },
+      clickChangeFontBaseColor(index) {
+        this.currentIndex = index;
+      },
+      btnClick(index, event) {
+        console.log('btnClick', index, event);
+      },
+      divClick() {
+        console.log("divClick");
+      }
+    },
+    filters: {
+      showHeight(height) {
+        return height.toFixed(1) + '米'
+      }
+    }
+  })
+
+  setTimeout(function () {
+    autoScroll()
+  }, 20)
+  //因为image load事件跳转,所以屏蔽
+  // setTimeout(autoScroll, 500)
+  //自动跳转到底部
+  function autoScroll() {
+    window.scrollTo(0, document.body.scrollHeight)
+  }
+</script>
+
+</body>
+</html>

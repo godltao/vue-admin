@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div id="app">
+
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  //异步操作
+  // setTimeout(() => {
+  //   console.log('HelloWorld');
+  // }, 1000)
+
+  // new Promise((resolve, reject) => {
+  //   setTimeout(() => {
+  //     resolve('hello world') //走then方法
+  //     // reject('error message') //走catch 方法
+  //   }, 1000)
+  // }).then(data => {
+  //   console.log(data);
+  // }).catch(err => {
+  //   console.log(err);
+  // })
+  //
+  // //Promise.all , 使得所有请求返回后才继续执行的操作,类似java的Mono.block 或者 circleBarre(循环栅栏)
+  // //参数为itretor对象
+  // Promise.all([
+  //   new Promise((resolve, reject) => {
+  //     setTimeout(() => {
+  //       resolve('操作1');
+  //     }, 3000)
+  //   }),
+  //   new Promise((resolve, reject) => {
+  //     setTimeout(() => {
+  //       resolve('操作2');
+  //     }, 2000)
+  //
+  //   }),
+  //   new Promise((resolve, reject) => {
+  //     setTimeout(() => {
+  //       resolve('操作3');
+  //     }, 1000)
+  //   })
+  // ]).then(results => {
+  //   for (const result of results) {
+  //     console.log(result);
+  //   }
+  // })
+
+  //Promise 链式处理 几种处理方式
+  //直接返回结果 = return Promise.resolve
+  new Promise((resolve, err) => {
+    return resolve(1);
+  }).then((data) => {
+    return data + 1;
+  }).then(data => {
+    return data + 1
+  }).then(data => data + 1).then(data => {
+    console.log(data);
+    return data
+  }).then(data => {
+   return Promise.resolve(data + 1)
+  }).then(data => {
+    console.log(data);
+  });
+</script>
+</body>
+</html>

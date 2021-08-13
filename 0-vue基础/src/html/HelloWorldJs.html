@@ -1,0 +1,60 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue Hello World</title>
+  <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app2">
+  {{ message2 }}
+  <br>
+  <span v-bind:title="message2" style="border: 1px solid orange">悬停提示</span>
+  <h3>列表</h3>
+  <ul>
+    <li v-for="item in movies">{{ item }}</li>
+  </ul>
+  <h3>计数器</h3>
+  <h4>当前基数:{{ counter }}</h4>
+  <!--    两种方式等效 @是语法糖-->
+  <button @click="counter++">+</button>
+  <button v-on:click="counter--">-</button>
+  <button @click="btnAdd">+</button>
+  <button @click="btnSub">-</button>
+</div>
+<script>
+  const dataModel = {
+    message2: 'this is first message!',
+    movies: ['星际穿越', '大话西游', '盗梦空间'],
+    counter: 0,
+  }
+  const app2 = new Vue({
+    el: '#app2',
+    data: dataModel,
+    methods: {
+      //方法量两种形式都是可以的
+      btnAdd: function () {
+        console.log('Add function exec....')
+        this.counter++
+      },
+      btnSub() {
+        console.log('Sub function exec...')
+        if (this.counter <= 0) {
+          console.log('counter is already the smallest...')
+          return
+        }
+        this.counter--
+      }
+    },
+    //可以跟声明周期函数,使得可以在初始化Vue的时候来进行回调
+    beforeCreate() {
+    },
+    created() {
+    },
+    mounted() {
+    }
+  })
+
+</script>
+</body>
+</html>

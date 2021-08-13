@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .baseFontColor {
+      color: red;
+    }
+  </style>
+  <!--  <link rel="import" href="template.html">-->
+</head>
+<body>
+
+<template id="myTemplate1">
+  <div>
+    <h2>{{ title }}</h2>
+    <p>{{ content }}</p>
+  </div>
+</template>
+
+<template id="myTemplate2">
+  <div>
+    <button @click="showParentCpn">打印父组件</button>
+  </div>
+</template>
+
+<div id="app">
+  <br>-------------- 父访问子组件 --------------<br>
+  <p :class="baseFontColor"> 父组件通过$children 或者 $refs 拿子组件</p><br>
+  <p :class="baseFontColor"> $refs 使用的最多,默认是空数组,需要在标签上显式的通过ref属性注册到$refs中</p><br>
+  <cpn1 ref="cpn11"></cpn1>
+  <cpn1 ref="cpn12"></cpn1>
+  <button @click="btnClick">打印子组件</button>
+  <br>-------------- 子访问父组件 --------------<br>
+  <br>
+  <p :class="baseFontColor"> 子组件通过$parent拿到上层父组件,只是最近的一个上层父组件
+    !!!!!一般开发中不这样用,否则耦合父组件</p><br>
+  <cpn2></cpn2>
+  <br>-------------- 通过$root访问根组件 --------------<br>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //注册为局部组件 Vue.component
+  const cpn1 = Vue.extend({
+    template: '#myTemplate1',
+    data() {
+      return {
+        title: '子组件标题',
+        content: '子组件内容',
+      }
+    },
+    methods: {
+      showTitleFromChildren() {
+        console.log('showTitleFromChildren', this.title);
+      },
+      showTitleFromRefs() {
+        console.log('showTitleFromRefs', this.content);
+      }
+    }
+  });
+
+  //注册为局部组件 Vue.component
+  const cpn2 = Vue.extend({
+    template: '#myTemplate2',
+    data() {
+      return {}
+    },
+    methods: {
+      showParentCpn() {
+        console.log('showParentCpn', this.$parent);
+        //调用父组件方法
+        this.$parent.btnClick()
+      },
+    }
+  });
+
+
+  //Vue实例为Root组件
+  let app = new Vue({
+    el: '#app',
+    data: {
+      baseFontColor: 'baseFontColor',
+      movies: ['海王', '海尔兄弟', '海扁王', '海贼王'],
+      message: 'this is from root vue component',
+      categories: [
+        {id: 1, name: '生活'},
+        {id: 2, name: '电器'},
+        {id: 3, name: '汽车'},
+        {id: 4, name: '两性'}
+      ],
+    },
+    methods: {
+      btnClick() {
+        console.log('$children', this.$children);
+        console.log('$refs', this.$refs);
+        //通过$children拿到子组件
+        this.$children[0].showTitleFromChildren();
+        this.$refs.cpn11.showTitleFromRefs();
+        this.$refs.cpn12.showTitleFromRefs();
+      }
+    },
+    //注册组件
+    components: {
+      cpn1,
+      cpn2
+    }
+  })
+  setTimeout(function () {
+    window.scrollTo(0, document.body.scrollHeight)
+  }, 20)
+</script>
+</body>
+</html>

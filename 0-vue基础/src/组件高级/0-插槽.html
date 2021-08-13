@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<template id="myTemplate1">
+  <div>
+    <h2>我是标题</h2>
+    <p>我是内容</p>
+    <slot name="left">左边</slot>
+    <slot name="center">中间</slot>
+    <slot name="right">右边</slot>
+  </div>
+</template>
+
+<template id="myTemplate2">
+  <div>
+    <!--    data名字是自己起的-->
+    <slot name="list" :data="pLanguages">
+      <ul>
+        <li v-for="item in pLanguages">{{ item }}</li>
+      </ul>
+      {{ path }}
+    </slot>
+  </div>
+</template>
+
+<div id="app">
+  <br>-------------- 如果出现两个slot,那么回将两个插槽插入相同的元素
+  具名插槽, 根据子组件中slot名字, 父组件中,使用slot=插槽名字,插入对应的内容--------------<br>
+  <cpn1>
+    <input type="text" slot="left" value="左边输入框">
+    <input type="text" slot="right" value="右边输入框">
+  </cpn1>
+  <br>-------------- --------------<br>
+  <cpn1>
+    <button slot="left">左边按钮</button>
+  </cpn1>
+  <br>-------------- --------------<br>
+  <cpn1>
+  </cpn1>
+  <br>-------------- 具名插槽 给slot 增加name属性,给需要插入的标签使用 slot="插槽名称 "--------------<br>
+  <br>-------------- 作用域具名插槽 通过 子组件slot 自定义一个属性:data="绑定子组件中的数据", 通过slot-scope="变量名称",
+  从而拿到子组件中的数据,然后再自定义显示--------------<br>
+  <cpn2 :path="'/user/ltao'">
+  </cpn2>
+  <cpn2>
+    <template slot="list" slot-scope="cpnData">
+      {{ cpnData.data.join(" - ") }}
+    </template>
+  </cpn2>
+  <br>-------------- 父组件中往slot中传数据 --------------<br>
+
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  const cpn1 = {
+    template: '#myTemplate1',
+  }
+  const cpn2 = {
+    template: '#myTemplate2',
+    props: {
+      path: String
+    },
+    data() {
+      return {
+        pLanguages: ['JavaScript', 'C++', 'Java', 'Python']
+      }
+    }
+  }
+
+  let app = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    components: {
+      cpn1,
+      cpn2
+    }
+  })
+</script>
+</body>
+</html>

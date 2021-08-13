@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .baseFontColor {
+      color: red;
+    }
+  </style>
+  <!--  <link rel="import" href="template.html">-->
+</head>
+<body>
+<div id="app">
+  <p :class="baseFontColor"> 组件是需要在vue的作用域内使用 </p><br>
+  <cpn1></cpn1>
+  <cpn2></cpn2>
+</div>
+<template id="myTemplate1">
+  <div>
+    <br>
+    <p class="baseFontColor">使用data函数的意义是为了让每个组件实例使用的data域都保持独立,不相互影响 </p><br>
+    <h2>{{ title }}</h2>
+    <p>{{ content }}</p>
+  </div>
+</template>
+
+<template id="myTemplate2">
+  <div>
+    <br>
+    <h2>{{ title }}</h2>
+    <p>{{ content }}</p>
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+  //1. 创建注册组件构造器对象
+  // Vue.extend({
+  // })
+  //2. 注册组件
+  // Vue.component('',)
+  //全局的组件
+  ////注册为全局组件
+  // Vue.component('cpn1', {
+  //   template: '#myTemplate',
+  //   data() {
+  //     return {
+  //       title: '我是全局template title from data function',
+  //       content: '我是全局template content from data function',
+  //     }
+  //   }
+  // })
+
+  //注册为局部组件
+  const cpn1 = Vue.extend({
+    template: '#myTemplate1',
+    data() {
+      return {
+        title: '我是全局template title from data function',
+        content: '我是全局template content from data function',
+      }
+    }
+  });
+
+  //Vue实例为Root组件
+  let app = new Vue({
+    el: '#app',
+    data: {
+      baseFontColor: 'baseFontColor'
+    },
+    methods: {},
+    //注册组件
+    components: {
+      cpn2: {
+        template: `
+          <div>
+            <h2>{{ title }}局部标题2/同时也是父子组件</h2>
+            <p>内容2.......</p>
+          </div>
+        `
+      },
+      cpn1: cpn1
+    }
+  })
+</script>
+</body>
+</html>

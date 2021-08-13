@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind</title>
+  <style>
+    .active {
+      color: red;
+    }
+
+    .line {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <img :src="imageUrl" v-on:click="alert(1)">
+  <!--  对象语法 -->
+  <h2 v-bind:class="{active: isActive, line: isLine}">动态改变class</h2>
+  <h2 class='固定class可以这样写' v-bind:class="{active: isActive, line: isLine}">动态改变class</h2>
+  <!--  正常情况下调用method是要加()的,v-bind没写使用为省去了, 但是这里不能省-->
+  <h2 class='固定class可以这样写' :class="getClasses()">动态改变class</h2>
+  <button @click="btnChange">click</button>
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      imageUrl: 'https://pic3.zhimg.com/80/v2-9856df9fe518af5bedcc78fe4d19943e_720w.jpg',
+      isActive: true,
+      isLine: true,
+    },
+    methods: {
+      btnChange() {
+        this.isActive = !this.isActive
+        this.isLine = !this.isLine
+      },
+      //通过函数调用,动态设置class
+      getClasses() {
+        return {active: this.isActive, line: this.isLine};
+      }
+    }
+  })
+</script>
+</body>
+</html>
