@@ -71,20 +71,16 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
 }
 
 .content-body {
-  flex: 1;
   width: 1100px;
-  margin: auto;
+  /*flex: 1;*/
+  /*margin: auto;*/
   display: flex;
   flex-wrap: wrap;
-  padding-top: 35px;
-}
-
-.paging-bar {
-  padding-bottom: 10px;
-  padding-top: 5px;
+  padding-top: 30px;
 }
 
 .content-item {
@@ -107,4 +103,8 @@ export default {
   color: red;
   margin: 0;
 }
+
+.paging-bar {
+}
+
 </style>
