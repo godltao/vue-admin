@@ -1,62 +1,19 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {defaultRouterData, adminRouterData} from "@/data/data";
 import store from '@/store'
-
-const routes = []
+import utils from '@/util'
 
 //添加默认路由
-defaultRouterData.forEach(item => {
-  routes.push({
-    path: item.path,
-    name: item.name,
-    component: () => import(`@/views${item.component}.vue`),
-    meta: {
-      roles: item.role,
-      title: item.title
-    }
-  })
-})
+const routes = utils.packingRouterData(defaultRouterData)
 //动态路由
 //后面可以在app中从后台拉取的数据,放入到vuex中,然后使用数据
 //find home
 let home = routes.find(item => item.path === '/');
-let homeChildren = [];
-home.children = homeChildren;
+//DEBUG
+if (home) {
+  home.children = utils.packingRouterData(adminRouterData)
+}
 
-adminRouterData.forEach(item => {
-  let rout = {
-    path: item.path,
-    name: item.name,
-    component: () => import(`@/views${item.component}.vue`),
-    meta: {
-      title: item.title,
-      roles: item.role
-    }
-  };
-  if (item.redirect) {
-    rout.redirect = item.redirect
-  }
-
-  if (item.children) {
-    rout.children = [];
-    item.children.forEach(citem => {
-      let crout = {
-        path: citem.path,
-        name: citem.name,
-        component: () => import(`@/views${citem.component}.vue`),
-        meta: {
-          title: citem.title,
-          roles: citem.role
-        }
-      }
-      if (citem.redirect) {
-        crout.redirect = citem.redirect
-      }
-      rout.children.push(crout)
-    })
-  }
-  homeChildren.push(rout)
-})
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
@@ -64,6 +21,18 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  //路由权限判断
+  let vToken = sessionStorage.getItem('v-token');
+  if (to.path === '/login') {
+    sessionStorage.removeItem('v-token');
+    next()
+  } else if (vToken) {
+    next();
+  } else {
+    next({path: '/login'})
+  }
+
+  //封装面包屑导航
   let breadcrumb = to.matched.map(item => {
     return {
       path: item.path,
@@ -73,7 +42,6 @@ router.beforeEach((to, from, next) => {
   store.commit('setBreadcrumb', breadcrumb)
   //set default active
   store.commit('setDefaultActive', to.path)
-  next();
 })
 
 export default router

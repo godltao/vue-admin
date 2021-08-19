@@ -21,7 +21,8 @@
 </template>
 
 <script>
-import axiosRequest from "network/axios";
+import service from '@/service'
+import {ElMessage} from 'element-plus'
 
 export default {
   name: "Login",
@@ -55,25 +56,25 @@ export default {
           let data = new FormData();
           data.append('userName', this.userInfo.name);
           data.append('password', this.userInfo.password);
-          new Promise((resolve) => {
-            axiosRequest({
-              url: '/login',
-              data,
-              method: 'post',
-            }).then(res => {
-              resolve(res.data)
+          service.login(data)
+            .then(data => {
+              if (data === true) {
+                sessionStorage.setItem('v-token', '123456789')
+                this.$store.commit('setUserInfo', {
+                  name: this.userInfo.name
+                })
+                this.$router.replace("/")
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: `用户名或密码错误`
+                });
+                this.$refs['loginForm'].resetFields();
+              }
             })
-          }).then(data => {
-            if (data === true) {
-              this.$router.replace("/home")
-            } else {
-              this.$message({
-                type: 'error',
-                message: `用户名或密码错误`
-              });
-              this.$refs['loginForm'].resetFields();
-            }
-          })
+            .catch(err => {
+              ElMessage.error("Login failed, Please retry...")
+            })
         } else {
           console.log('error submit!!');
           return false;

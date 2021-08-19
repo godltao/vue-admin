@@ -2,13 +2,13 @@ import {createStore} from 'vuex'
 //todo from backend
 import {adminRouterData} from "@/data/data";
 
-
 export default createStore({
   state: {
     isCollapse: false,
     breadcrumb: [],
     adminRouterData,
-    defaultActive: '/index'
+    defaultActive: '/index',
+    userInfo: {}
   },
   mutations: {
     ctlIsCollapse(state) {
@@ -19,6 +19,9 @@ export default createStore({
     },
     setDefaultActive(state, path) {
       state.defaultActive = path
+    },
+    setUserInfo(state, user) {
+      state.userInfo = user
     },
   },
   actions: {},

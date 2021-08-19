@@ -4,19 +4,29 @@
       <i class="el-icon-setting" style="margin-right: 15px"></i>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>查看</el-dropdown-item>
-          <el-dropdown-item>新增</el-dropdown-item>
-          <el-dropdown-item>删除</el-dropdown-item>
+          <el-dropdown-item>个人中心</el-dropdown-item>
+          <el-dropdown-item @click="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
-    <span>王小虎</span>
+    <span>{{ name }}</span>
   </el-header>
 </template>
 
 <script>
 export default {
-  name: "Header"
+  name: "Header",
+  data() {
+    return {
+      name: this.$store.state.userInfo.name
+    }
+  },
+  methods:{
+    logout(){
+      sessionStorage.removeItem('v-token')
+      this.$router.replace('/login')
+    }
+  }
 }
 </script>
 

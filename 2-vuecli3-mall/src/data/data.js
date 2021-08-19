@@ -35,6 +35,7 @@ let adminRouterData = [
         path: 'phone',
         resolvePath: '/digital/phone',
         component: '/digital/Phone',
+        role: ['admin'],
         icon: 'el-icon-mobile-phone'
       },
       {
@@ -43,6 +44,7 @@ let adminRouterData = [
         path: 'computer',
         resolvePath: '/digital/computer',
         component: '/digital/Computer',
+        role: ['admin'],
         icon: 'el-icon-s-platform'
       },
     ],

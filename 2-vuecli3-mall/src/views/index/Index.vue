@@ -13,7 +13,7 @@
 
 <script>
 import Paging from "@/layout/home/Paging";
-import axiosRequest from "@/network/axios";
+import service from "@/service"
 import {ElLoading, ElMessage} from 'element-plus'
 
 export default {
@@ -40,27 +40,18 @@ export default {
         fullscreen: false,
         target: '.content-body'
       })
-      axiosRequest({
-        url: '/goods',
-        params: {
-          page: this.page,
-          size: this.size
-        },
-        methods: 'GET'
-      }).then(response => {
-        if (response.data) {
-          this.goods = response.data.data
-          this.total = response.data.total
-        } else {
-          ElMessage('service is not available!')
-        }
-        loadingInstance.close();
-      }).catch(err => {
-        ElMessage('网络出现问题~')
-        loadingInstance.close();
-      })
+      service.goodsList(this.page, this.size)
+        .then(resolveData => {
+          this.goods = resolveData.data
+          this.total = resolveData.total
+        })
+        .catch(err => {
+          ElMessage.error('Service is unable, Please retry...')
+        })
+        .finally(() => {
+          loadingInstance.close();
+        })
     }
-
   },
   components: {
     Paging
@@ -85,11 +76,11 @@ export default {
 .content-body {
   flex: 1;
   width: 1100px;
-  margin: 10px auto 10px;
+  margin: auto;
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  height: 666px;
+  padding-top: 37px;
 }
 
 .paging-bar {
@@ -99,9 +90,9 @@ export default {
 
 .content-item {
   width: 350px;
-  height: 215px;
+  height: 220px;
   background-color: #f2f2f2;
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
