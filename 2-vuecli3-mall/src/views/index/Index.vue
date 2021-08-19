@@ -79,8 +79,7 @@ export default {
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  height: 666px;
-  padding-top: 37px;
+  padding-top: 35px;
 }
 
 .paging-bar {
