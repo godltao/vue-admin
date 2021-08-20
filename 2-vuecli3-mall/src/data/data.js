@@ -69,6 +69,15 @@ let adminRouterData = [
     role: ['admin'],
     icon: 'el-icon-loading',
   },
+  {
+    name: 'listAndPaging',
+    title: '分页列表',
+    path: 'listAndPaging',
+    resolvePath: '/listAndPaging',
+    component: '/list/ListAndPaging',
+    role: ['admin'],
+    icon: 'el-icon-s-grid',
+  },
 ]
 
 export {defaultRouterData, adminRouterData}

@@ -1,5 +1,7 @@
 <template>
-<h2>电脑</h2>
+  <div class="content-body">
+    <el-empty description="电脑没有库存"></el-empty>
+  </div>
 </template>
 
 <script>
@@ -9,5 +11,7 @@ export default {
 </script>
 
 <style scoped>
-
+.content-body {
+  margin: auto;
+}
 </style>
