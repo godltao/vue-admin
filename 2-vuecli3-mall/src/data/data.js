@@ -1,14 +1,6 @@
 let defaultRouterData = [
   {name: 'login', path: '/login', component: '/auth/Login', icon: ''},
   {name: 'register', path: '/register', component: '/auth/Register', icon: ''},
-  {
-    name: 'index2',
-    title: '首页',
-    path: '/index2',
-    component: '/index/Index2',
-    role: ['admin'],
-    icon: 'el-icon-s-goods'
-  },
   {name: 'home', title: '首页', path: '/', component: '/home/Home', role: ['admin'], icon: ''},
 ]
 

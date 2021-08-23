@@ -1,7 +1,14 @@
 <template>
   <div id="hy-swiper">
-    <div class="swiper" @touchstart="touchStart" @dragenter.prevent="" @dragover.prevent="" @dragstart="dragStart" @dragend="dragEnd" @drag="drag"
-         @touchmove="touchMove" @touchend="touchEnd">
+    <div class="swiper"
+         @touchstart="touchStart"
+         @dragenter.prevent=""
+         @dragover.prevent=""
+         @dragstart="dragStart"
+         @dragend="dragEnd"
+         @drag="drag"
+         @touchmove="touchMove"
+         @touchend="touchEnd">
       <slot></slot>
     </div>
     <slot name="indicator">
@@ -144,17 +151,11 @@ export default {
         this.totalWidth = swiperEl.offsetWidth;
         this.swiperStyle = swiperEl.style;
       }
-
       // 4.让swiper元素, 显示第一个(目前是显示前面添加的最后一个元素)
       this.setTransform(-this.totalWidth);
     },
 
-    dragover(e) {
-      console.log('dragover')
-    },
-
     dragStart(e) {
-      console.log(e)
       e.dataTransfer.setDragImage(this.dragThumbnail, 0, 0);
       // 1.如果正在滚动, 不可以拖动
       if (this.scrolling) return;
@@ -279,10 +280,12 @@ export default {
 #hy-swiper {
   overflow: hidden;
   position: relative;
+  cursor: pointer;
 }
 
 .swiper {
   display: flex;
+  align-items: center;
 }
 
 .indicator {

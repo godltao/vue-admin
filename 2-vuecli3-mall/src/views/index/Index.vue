@@ -18,17 +18,7 @@
         </li>
       </ul>
     </div>
-    <div>
-      <el-carousel :interval="100000" arrow="always" ref="cardShow">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <h3>{{ item }}</h3>
-        </el-carousel-item>
-      </el-carousel>
-    </div>
-    <div>
-      <button @click="next2">切换下一张</button>
-    </div>
-    <!--    <Swiper :banners="banner"/>-->
+      <Swiper :banners="banner"/>
   </div>
 </template>
 
@@ -69,9 +59,6 @@ export default {
     }
   },
   methods: {
-    next2() {
-      this.$refs.cardShow.next()
-    }
   },
   components: {
     Swiper
@@ -138,6 +125,10 @@ export default {
 .el-dropdown-menu {
   display: flex;
 }
+.swiper-div{
+  width: 750px;
+}
+
 
 .el-dropdown-menu__item {
   flex: 1;

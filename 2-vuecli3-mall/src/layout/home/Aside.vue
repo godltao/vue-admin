@@ -68,6 +68,10 @@ export default {
   min-height: 100%;
   width: 180px;
 }
+.el-menu-aside{
+  flex-shrink:0;
+}
+
 .el-menu-item{
   min-width: 0;
 }

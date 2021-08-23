@@ -14,6 +14,8 @@
   .slide {
     width: 100%;
     flex-shrink: 0;
+    display: flex;
+    justify-content: center;
   }
 
   .slide img {
