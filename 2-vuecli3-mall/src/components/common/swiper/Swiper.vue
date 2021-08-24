@@ -47,7 +47,7 @@ export default {
     },
     clickInterval: {
       type: Number,
-      default: 100
+      default: 50
     },
 
   },
@@ -216,7 +216,8 @@ export default {
       let currentMove = Math.abs(this.distance);
       //如果是点击(点击对象是img && (移动距离 === 0 || 点击间隔事件 < clickInterval))
       if (e.target.tagName === 'IMG'
-        && (this.distance === 0 || new Date().getTime() - this.clickTimeUnix) < this.clickInterval) {
+        && (this.distance === 0 || (new Date().getTime() - this.clickTimeUnix) < this.clickInterval)) {
+        console.log()
         window.open(e.target.getAttribute("data-href"))
       }
       // 2.判断最终的距离
