@@ -1,12 +1,11 @@
 <template>
   <div id="hy-swiper">
     <div class="swiper"
+         @mousedown.prevent="mousedown"
+         @mouseup.prevent="mouseup"
+         @mousemove="mousemove"
+         @mouseleave="mouseup"
          @touchstart="touchStart"
-         @dragenter.prevent=""
-         @dragover.prevent=""
-         @dragstart="dragStart"
-         @dragend="dragEnd"
-         @drag="drag"
          @touchmove="touchMove"
          @touchend="touchEnd">
       <slot></slot>
@@ -16,7 +15,7 @@
     <div class="indicator">
       <slot name="indicator" v-if="showIndicator && slideCount>1">
         <div v-for="(item, index) in slideCount" class="indi-item" :class="{active: index === currentIndex-1}"
-             :key="index"></div>
+             :key="index" @click="changeItem(index + 1)"></div>
       </slot>
     </div>
   </div>
@@ -28,7 +27,7 @@ export default {
   props: {
     interval: {
       type: Number,
-      default: 5000
+      default: 3000
     },
     animDuration: {
       type: Number,
@@ -36,7 +35,7 @@ export default {
     },
     moveRatio: {
       type: Number,
-      default: 0.25
+      default: 0.10
     },
     showIndicator: {
       type: Boolean,
@@ -44,7 +43,11 @@ export default {
     },
     autoScroll: {
       type: Boolean,
-      default: false
+      default: true
+    },
+    clickInterval: {
+      type: Number,
+      default: 100
     },
 
   },
@@ -55,7 +58,9 @@ export default {
       swiperStyle: {}, // swiper样式
       currentIndex: 1, // 当前的index
       scrolling: false, // 是否正在滚动
-      dragThumbnail: {}, // 透明缩略图
+      dragMoveFlag: false, // 是否是拉拽移动操作进行时
+      imageWidth: 0, // 可视图片宽度
+      clickTimeUnix: 0, // 鼠标点击和弹起时间差
     }
   },
   mounted: function () {
@@ -64,15 +69,13 @@ export default {
 
     // 2.开启定时器
     this.startTimer();
-
-    //加载透明缩略图
-    this.loadImgThumbnail()
   },
   methods: {
     /**
      * 定时器操作
      */
     startTimer: function () {
+      this.stopTimer()
       if (this.autoScroll) {
         this.playTimer = window.setInterval(() => {
           this.currentIndex++;
@@ -106,6 +109,7 @@ export default {
      * 校验正确的位置
      */
     checkPosition: function () {
+      //延迟加载, 制造一点动态效果
       window.setTimeout(() => {
         // 1.校验正确的位置
         this.swiperStyle.transition = '0ms';
@@ -116,9 +120,6 @@ export default {
           this.currentIndex = this.slideCount;
           this.setTransform(-this.currentIndex * this.totalWidth);
         }
-
-        // 2.结束移动后的回调
-        this.$emit('transitionEnd', this.currentIndex - 1);
       }, this.animDuration)
     },
 
@@ -155,8 +156,8 @@ export default {
       this.setTransform(-this.totalWidth);
     },
 
-    dragStart(e) {
-      e.dataTransfer.setDragImage(this.dragThumbnail, 0, 0);
+    mousedown(e) {
+      // e.dataTransfer.setDragImage(this.dragThumbnail, 0, 0);
       // 1.如果正在滚动, 不可以拖动
       if (this.scrolling) return;
 
@@ -165,6 +166,9 @@ export default {
 
       // 3.保存开始滚动的位置
       this.startX = e.x;
+
+      this.dragMoveFlag = true;
+      this.clickTimeUnix = new Date().getTime()
     },
 
     /**
@@ -181,7 +185,10 @@ export default {
       this.startX = e.touches[0].pageX;
     },
 
-    drag(e) {
+    mousemove(e) {
+      if (!this.dragMoveFlag) {
+        return;
+      }
       // 1.计算出用户拖动的距离
       this.currentX = e.x;
       this.distance = this.currentX - this.startX;
@@ -203,16 +210,22 @@ export default {
       this.setTransform(moveDistance);
     },
 
-    dragEnd(e) {
+    mouseup(e) {
+      this.dragMoveFlag = false;
       // 1.获取移动的距离
       let currentMove = Math.abs(this.distance);
-
+      //如果是点击(点击对象是img && (移动距离 === 0 || 点击间隔事件 < clickInterval))
+      if (e.target.tagName === 'IMG'
+        && (this.distance === 0 || new Date().getTime() - this.clickTimeUnix) < this.clickInterval) {
+        window.open(e.target.getAttribute("data-href"))
+      }
       // 2.判断最终的距离
       if (this.distance === 0) {
+        this.startTimer();
         return
-      } else if (this.distance > 0 && currentMove > this.totalWidth * this.moveRatio) { // 右边移动超过0.5
+      } else if (this.distance > 0 && currentMove > e.target.width * this.moveRatio) { // 右边移动超过0.5
         this.currentIndex--
-      } else if (this.distance < 0 && currentMove > this.totalWidth * this.moveRatio) { // 向左移动超过0.5
+      } else if (this.distance < 0 && currentMove > e.target.width * this.moveRatio) { // 向左移动超过0.5
         this.currentIndex++
       }
 
@@ -221,6 +234,9 @@ export default {
 
       // 4.移动完成后重新开启定时器
       this.startTimer();
+
+      // 5. 清空移动数据
+      this.distance = 0
     },
 
     touchEnd: function (e) {
@@ -230,9 +246,9 @@ export default {
       // 2.判断最终的距离
       if (this.distance === 0) {
         return
-      } else if (this.distance > 0 && currentMove > this.totalWidth * this.moveRatio) { // 右边移动超过0.5
+      } else if (this.distance > 0 && currentMove > e.target.width * this.moveRatio) { // 右边移动超过0.5
         this.currentIndex--
-      } else if (this.distance < 0 && currentMove > this.totalWidth * this.moveRatio) { // 向左移动超过0.5
+      } else if (this.distance < 0 && currentMove > e.target.width * this.moveRatio) { // 向左移动超过0.5
         this.currentIndex++
       }
 
@@ -241,17 +257,8 @@ export default {
 
       // 4.移动完成后重新开启定时器
       this.startTimer();
-    },
 
-    /**
-     * 控制上一个, 下一个
-     */
-    previous: function () {
-      this.changeItem(-1);
-    },
-
-    next: function () {
-      this.changeItem(1);
+      this.touchendFlag = true
     },
 
     changeItem: function (num) {
@@ -259,18 +266,11 @@ export default {
       this.stopTimer();
 
       // 2.修改index和位置
-      this.currentIndex += num;
+      this.currentIndex = num;
       this.scrollContent(-this.currentIndex * this.totalWidth);
 
       // 3.添加定时器
       this.startTimer();
-    },
-    loadImgThumbnail() {
-      new Promise((resolve) => {
-        const img = new Image();
-        img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' %3E%3Cpath /%3E%3C/svg%3E";
-        resolve(img)
-      }).then(img => this.dragThumbnail = img)
     },
   }
 }
@@ -301,7 +301,7 @@ export default {
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: #42b983;
   line-height: 8px;
   text-align: center;
   font-size: 12px;
